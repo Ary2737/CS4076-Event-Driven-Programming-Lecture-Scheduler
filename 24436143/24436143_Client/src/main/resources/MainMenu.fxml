@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+
+<BorderPane fx:id="border_pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.clientController.MainMenuController">
+    <top>
+        <Label fx:id="title_label" style="-fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 28;" text="UL Lecture Timetable" textFill="#30bc20" BorderPane.alignment="TOP_CENTER">
+            <BorderPane.margin>
+                <Insets top="50.0" />
+            </BorderPane.margin>
+        </Label>
+    </top>
+    <center>
+        <ImageView fitHeight="184.0" fitWidth="206.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+            <image>
+                <Image url="@images/img.png" />
+            </image>
+            <BorderPane.margin>
+                <Insets top="-30.0" />
+            </BorderPane.margin>
+        </ImageView>
+    </center>
+    <bottom>
+        <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <children>
+                <Button fx:id="add_button" mnemonicParsing="false" style="-fx-background-color: #3add94;" onAction="#handleAddButton" text="ADD Lecture" textFill="#101111">
+                    <HBox.margin>
+                        <Insets left="80.0" top="30.0" />
+                    </HBox.margin>
+                </Button>
+                <Button fx:id="remove_button" mnemonicParsing="false" onAction="#handleAddButton" style="-fx-background-color: #3add94;" text="REMOVE Lecture">
+                    <HBox.margin>
+                        <Insets left="50.0" top="30.0" />
+                    </HBox.margin>
+                </Button>
+                <Button fx:id="display_lectures_button" mnemonicParsing="false" onAction="#handleDisplayButtonClick" style="-fx-background-color: #3add94;" text="DISPLAY Lectures">
+                    <HBox.margin>
+                        <Insets left="60.0" top="30.0" />
+                    </HBox.margin>
+                </Button>
+            </children>
+        </HBox>
+    </bottom>
+</BorderPane>
