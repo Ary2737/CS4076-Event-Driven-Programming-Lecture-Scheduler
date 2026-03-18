@@ -29,12 +29,12 @@
     <bottom>
         <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
             <children>
-                <Button fx:id="add_button" mnemonicParsing="false" style="-fx-background-color: #3add94;" onAction="#handleAddButton" text="ADD Lecture" textFill="#101111">
+                <Button fx:id="add_button" mnemonicParsing="false" style="-fx-background-color: #3add94;" onAction="#handleModifyButtons" text="ADD Lecture" textFill="#101111">
                     <HBox.margin>
                         <Insets left="80.0" top="30.0" />
                     </HBox.margin>
                 </Button>
-                <Button fx:id="remove_button" mnemonicParsing="false" onAction="#handleAddButton" style="-fx-background-color: #3add94;" text="REMOVE Lecture">
+                <Button fx:id="remove_button" mnemonicParsing="false" onAction="#handleModifyButtons" style="-fx-background-color: #3add94;" text="REMOVE Lecture">
                     <HBox.margin>
                         <Insets left="50.0" top="30.0" />
                     </HBox.margin>
