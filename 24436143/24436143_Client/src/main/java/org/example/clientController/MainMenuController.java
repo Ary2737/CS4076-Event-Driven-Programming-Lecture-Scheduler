@@ -15,31 +15,40 @@ import javafx.scene.control.Button;
 import javafx.stage.Stage;
 import java.io.IOException;
 
+
 public class MainMenuController {
 
+    @FXML private Button add_button;
+    @FXML private Button remove_button;
+
     @FXML
-    private void handleAddButton(ActionEvent e) {
-        try {
-            // Trying to load FXML file of add lecture screen
-            Parent loader = FXMLLoader.load(getClass().getResource("/addLecture.fxml"));
-
-            // Creating scene with loaded FXML file
-            Scene addLectureScene = new Scene(loader);
-
-            // Getting current stage where the add button was clicked
-            Stage currentStage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-
-            // Swapping scenes around + displaying
-            currentStage.setScene(addLectureScene);
-            currentStage.show();
+    private void handleModifyButtons(ActionEvent e) {
 
 
+        // Checking if the right buttons was clicked ("ADD Lecture" or "REMOVE Lecture" button)
 
-        } catch (IOException ex) {
-            System.err.println("Unable to load next scene !");
-            throw new RuntimeException("Unable to load next scene !");
+        if (e.getSource() == add_button || e.getSource() == remove_button) {
+            try {
+                // Trying to load FXML file of modify lecture screen
+                Parent loader = FXMLLoader.load(getClass().getResource("/modifyLecture.fxml"));
+
+                // Creating scene with loaded FXML file
+                Scene modifyLectureScene = new Scene(loader);
+
+                // Getting current stage where the buttons were clicked
+                Stage currentStage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+
+                // Swapping scenes around + displaying
+                currentStage.setScene(modifyLectureScene);
+                currentStage.show();
+
+
+            } catch (IOException ex) {
+                System.err.println("Unable to load next scene !");
+                throw new RuntimeException("Unable to load next scene !");
+            }
+
         }
-
     }
 
     // Method which handles the display button click

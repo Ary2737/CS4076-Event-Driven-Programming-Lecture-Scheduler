@@ -5,6 +5,7 @@
 
 package org.example.clientController;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
@@ -17,7 +18,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class AddLectureController {
+public class modifyLectureController {
 
     // Declaring UI components of ADD screen
 
@@ -80,10 +81,12 @@ public class AddLectureController {
         }
     }
 
-    // Method which handles "ADD Lecture" Button
+    /*
+      Method which handles "ADD"/"REMOVE" lecture buttons
+     */
 
     @FXML
-    private void handleAddLectureClick() {
+    private void handleLectureModification(ActionEvent event) {
         // Get data from user input/input UI
         String dayOfWeek = dayChoiceBox.getValue();
         String timeSlot = timeSlotChoiceBox.getValue();
@@ -93,11 +96,25 @@ public class AddLectureController {
         // Ensure nothing is empty
         if (dayOfWeek == null || timeSlot == null || roomCode.isEmpty() || moduleCode.isEmpty()) {
             serverClientLog.appendText("SYSTEM: Please fill in all fields before adding.\n");
+            // Prevents server from receiving empty request
+            return;
 
         }
 
+        // Determining whether "ADD" or 'REMOVE" button was clicked
+        // This will determine which action the user wants to do (ADD/REMOVE lecture)
+        String modifyAction = " ";
+
+        // getSource() = Tells us which button was clicked
+
+        if(event.getSource() == addLectureButton){
+            modifyAction = "ADD|";
+        } else if(event.getSource() == removeLectureButton){
+            modifyAction = "REMOVE|";
+        }
+
         // Formatting client request string for server
-        String clientRequest = "ADD|" +  dayOfWeek + "|" +  timeSlot + "|" +  moduleCode + "|" + roomCode;
+        String clientRequest = modifyAction +  dayOfWeek + "|" +  timeSlot + "|" +  moduleCode + "|" + roomCode;
 
         // Attempt to send the client request to the server
         try {
