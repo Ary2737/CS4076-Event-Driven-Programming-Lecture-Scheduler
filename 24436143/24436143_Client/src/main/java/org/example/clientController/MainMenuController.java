@@ -18,6 +18,7 @@ import java.io.IOException;
 
 public class MainMenuController {
 
+    private @FXML Button display_lectures_button;
     @FXML private Button add_button;
     @FXML private Button remove_button;
 
