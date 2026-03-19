@@ -130,4 +130,48 @@ public class modifyLectureController {
         }
     }
 
+
+    /*
+    Method which handles the "STOP CONNECTION" button
+     */
+
+    @FXML
+    private void handleStopConnection(ActionEvent event) {
+
+        // String to be sent to server (Client's request to shut down server)
+        String clientRequest = "QUIT";
+
+        // Informing server with "QUIT" client request
+        try {
+            // Client "QUIT" request is sent to server
+            serverClientLog.appendText("CLIENT: Attempting to close server connection...\n");
+            serverClientLog.appendText("CLIENT: Sending " + clientRequest + " to SERVER\n");
+            out.println(clientRequest);
+
+            // Server confirms that the connection is closed
+            String serverResponse = in.readLine();
+            serverClientLog.appendText("SERVER: " + serverResponse);
+
+
+            // Closing the input/output streams
+            if(out != null) out.close();
+            if(in != null) in.close();
+
+            // Closing the client's socket
+            if(socket != null && !socket.isClosed()) socket.close();
+
+
+            serverClientLog.appendText("SERVER: Connection successfully closed\n");
+
+            // Disabling GUI buttons so that user can't submit add/remove requests
+            addLectureButton.setDisable(true);
+            removeLectureButton.setDisable(true);
+
+        } catch (IOException e) {
+            serverClientLog.appendText("SYSTEM: Error: " + e.getMessage());
+            throw new RuntimeException(e);
+        }
+
+    }
+
 }

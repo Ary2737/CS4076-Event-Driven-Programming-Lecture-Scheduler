@@ -86,7 +86,13 @@ public class ServerController {
 
             return "SERVER: Success !Displaying schedule: " + scheduleData;
 
-        } else {
+        } else if(action.equals("QUIT")) {
+            System.out.println("Client requested to end server connection....");
+
+            // Message to confirm the closure of the server connection
+            return "SERVER: Connection with client has ended. Goodbye";
+        }
+        else {
             // If all else fails throw our own custom exception (if action is undefined)
             throw new IncorrectActionException("The server cannot process this action" + action);
         }

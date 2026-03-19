@@ -82,12 +82,12 @@
          <bottom>
             <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                <children>
-                  <Button fx:id="addLectureButton" mnemonicParsing="false" onAction="#handleLectureModification" prefHeight="36.0" prefWidth="129.0" style="-fx-background-color: #21d742;" text="ADD Lecture" textFill="#070707">
+                  <Button fx:id="addLectureButton" mnemonicParsing="false" prefHeight="36.0" prefWidth="129.0" style="-fx-background-color: #21d742;" text="ADD Lecture" onAction="#handleLectureModification" textFill="#070707">
                      <HBox.margin>
                         <Insets left="30.0" top="40.0" />
                      </HBox.margin>
                   </Button>
-                  <Button fx:id="removeLectureButton" mnemonicParsing="false" onAction="#handleLectureModification" prefHeight="36.0" prefWidth="129.0" style="-fx-background-color: #e12626; " text="Remove Lecture">
+                  <Button fx:id="removeLectureButton" mnemonicParsing="false" prefHeight="36.0" prefWidth="129.0" style="-fx-background-color: #e12626; " onAction="#handleLectureModification" text="Remove Lecture">
                      <HBox.margin>
                         <Insets left="60.0" top="40.0" />
                      </HBox.margin>
