@@ -18,7 +18,7 @@
             <padding>
                 <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
             </padding>
-         <Button fx:id="returnMenuButton" mnemonicParsing="false" onAction="#handleMenuReturn" style="-fx-background-color: #389421;" text="Back to Main Menu" textFill="WHITE" />
+         <Button fx:id="returnMenuButton" mnemonicParsing="false" onAction="#handleMenuReturn" style="-fx-background-color: #389421; -fx-font-weight: BOLD;" text="Back to Main Menu" textFill="WHITE" />
             <Label text="UL Lecture Timetable" textFill="#389421">
                 <font>
                     <Font name="System Bold" size="24.0" />

@@ -119,7 +119,7 @@ public class modifyLectureController {
         }
 
         // Formatting client request string for server
-        String clientRequest = modifyAction +  dayOfWeek + "|" +  timeSlot + "|" +  moduleCode + "|" + roomCode;
+        String clientRequest = modifyAction +  dayOfWeek + " | " +  timeSlot + " | " +  moduleCode + " | " + roomCode;
 
         // Attempt to send the client request to the server
         try {

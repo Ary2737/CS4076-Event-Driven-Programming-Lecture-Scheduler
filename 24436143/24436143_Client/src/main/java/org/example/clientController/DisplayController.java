@@ -52,14 +52,19 @@ public class DisplayController {
 
 
     private List<Lecture> parseLectureData(String response) {
+
+        // We add the length of the tag so it skips completely past it!
+        String cleanData = response.substring(response.indexOf("LECTURE_DATA|") + "LECTURE_DATA|".length());
+
+        // Let's add a print statement right here to guarantee it looks perfect before parsing:
+        System.out.println("Cleaned data being parsed: '" + cleanData + "'");
+
+        List<Lecture> parsedLectures = parseLectureData(cleanData);
         // Create an empty list to hold the Lecture objects
         List<Lecture> list = new ArrayList<>();
 
-        // Remove the "LECTURE_DATA|" header tag
-        String rawData = response.replace("LECTURE_DATA|", "");
-
         // Split the string into individual rows using the colon ':'
-        String[] rows = rawData.split(":");
+        String[] rows = response.split(":");
 
         // Loop through each row
         for (String row : rows) {
@@ -86,6 +91,7 @@ public class DisplayController {
 
     @FXML
     public void handleDisplayButtonClick() {
+        System.out.println("Button was clicked!");
         try {
             // Asking server for display
             out.println("DISPLAY|ALL");
@@ -93,11 +99,15 @@ public class DisplayController {
 
             // Wait for the server to send the data back
             String serverResponse = in.readLine();
+            System.out.println("Server responded: " + serverResponse); // <-- ADD THIS LINE
 
             if (serverResponse != null) {
                 if (serverResponse.startsWith("LECTURE_DATA|")) {
+
+                    // Only getting the necessary info from server response !
+                    String cleanData = serverResponse.substring(serverResponse.indexOf("LECTURE_DATA|"));
                     // Decode the data and update the grid
-                    List<Lecture> parsedLectures = parseLectureData(serverResponse);
+                    List<Lecture> parsedLectures = parseLectureData(cleanData);
                     populateGridWithLectures(parsedLectures);
 
                 } else if (serverResponse.startsWith("SCHEDULE_EMPTY|")) {
@@ -119,8 +129,11 @@ public class DisplayController {
         // Loop through the list and place each block
         for (Lecture l : receivedLectures) {
 
+            // DIAGNOSTIC PRINT: Let's see exactly what the JavaFX grid is trying to read
+            System.out.println("Attempting to draw block for Day: '" + l.getDayOfWeek().trim() + "' at Time: '" + l.getTimeSlot().trim() + "'");
+
             int col = 0;
-            switch (l.getDayOfWeek()) {
+            switch (l.getDayOfWeek().trim()) {
                 case "Monday": col = 1; break;
                 case "Tuesday": col = 2; break;
                 case "Wednesday": col = 3; break;
@@ -129,7 +142,7 @@ public class DisplayController {
             }
 
             int row = 0;
-            switch (l.getTimeSlot()) {
+            switch (l.getTimeSlot().trim()) {
                 case "09:00-10:00": row = 1; break;
                 case "10:00-11:00": row = 2; break;
                 case "11:00-12:00": row = 3; break;

@@ -40,8 +40,8 @@ public class ServerController {
             Lecture newLecture = new Lecture(details[1],details[2],details[3],details[4]);
             boolean success = timeTableSlots.addLecture(newLecture);
 
-            if(success) return "SERVER: SUCCESS! Lecture added";
-            else return "SERVER: FAILURE! Lecture could not be added. Clash found !";
+            if(success) return " SUCCESS! Lecture added";
+            else return "FAILURE! Lecture could not be added. Clash found !";
 
         } else if(action.equals("REMOVE")) {
 
@@ -49,10 +49,10 @@ public class ServerController {
             Lecture lectureToRemove = new Lecture(details[1],details[2],details[3],details[4]);
             boolean success = timeTableSlots.removeLecture(lectureToRemove);
 
-            if(success) return "SERVER: SUCCESS! Lecture removed. " +
+            if(success) return " Lecture removed. " +
                                "Room: " + lectureToRemove.getRoomCode() +
-                              " free, TimeSlot: " + lectureToRemove.getTimeSlot() + "free";
-            else return "SERVER: FAILURE! Lecture doesn't already exist";
+                              " free, TimeSlot: " + lectureToRemove.getTimeSlot() + " free";
+            else return " FAILURE! Lecture doesn't already exist";
 
         } else if(action.equals("DISPLAY")) {
 
@@ -61,7 +61,7 @@ public class ServerController {
 
             // Check if there are lecture slots in the schedule
             if(scheduledLectures.isEmpty()) {
-                return "SCHEDULE_EMPTY|No lectures scheduled yet.";
+                return " SCHEDULE_EMPTY | No lectures scheduled yet.";
 
             }
 
@@ -69,7 +69,7 @@ public class ServerController {
             // ':' = Divides lecture objects
             // ',' = Divides columns representing attributes of lecture
 
-            StringBuilder scheduleData= new StringBuilder("LECTURE_DATA|");
+            StringBuilder scheduleData= new StringBuilder("LECTURE_DATA| ");
 
 
             // Add lectures to formatted StringBuilder
@@ -84,13 +84,13 @@ public class ServerController {
                 scheduleData.append(":");
             }
 
-            return "SERVER: Success !Displaying schedule: " + scheduleData;
+            return "Success! Displaying schedule: " + scheduleData;
 
         } else if(action.equals("QUIT")) {
             System.out.println("Client requested to end server connection....");
 
             // Message to confirm the closure of the server connection
-            return "SERVER: Connection with client has ended. Goodbye";
+            return "Connection with client has ended. Goodbye";
         }
         else {
             // If all else fails throw our own custom exception (if action is undefined)
