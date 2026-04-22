@@ -70,18 +70,23 @@ public class createServerConnection {
 
                 // Read in message from the client and check if null
 
-                String clientMessage = in.readLine();
-
+                String clientMessage = " ";
 
                 // If not null try to process the client's message using server's controller
                 // If null , do nothing
-                if(clientMessage != null) {
+                while ((clientMessage = in.readLine()) != null) {
                     System.out.println("SERVER: Received: " + clientMessage);
                     try {
                         String serverResponse = controller.processClientRequest(clientMessage);
 
                         // Output response to console using PrintWriter
                         out.println(serverResponse);
+
+
+                        // If the client wants to quit, break the loop to close connection
+                        if (clientMessage.equals("QUIT")) {
+                            break;
+                        }
 
                     } catch (IncorrectActionException ex) {
                         // If the server can't process request throw our own custom exception
@@ -99,12 +104,8 @@ public class createServerConnection {
 
             finally {
                 try {
-                    // If the output stream isn't null...
-                    if(out != null ) {
-                        // Send message to client to process
-                        out.println("SERVER_DISCONNECT|Connection closing...");
-                        out.close(); // Close the PrintWriter
-                    }
+                    System.out.println("Client handler loop finished. Closing connection.");
+                    if(link != null) link.close();
 
                     // These if statements prevent NullPointerExceptions on the client side
                     // If input stream isn't null close it

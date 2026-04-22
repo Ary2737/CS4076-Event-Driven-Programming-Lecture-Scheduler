@@ -30,26 +30,9 @@ public class DisplayController {
     @FXML private Button displayButton;
     @FXML private Button returnMenuButton;
 
-    // Network/Stream variables
-    private Socket socket;
+    // Stream variables
     private BufferedReader in;
     private PrintWriter out;
-    private final int SERVER_PORT = 2378;
-    private final String SERVER_IP = "127.0.0.1";
-
-    @FXML
-    public void initialize() {
-        // Attempt to set up connection with server application
-        try {
-            socket = new Socket(SERVER_IP, SERVER_PORT);
-            out = new PrintWriter(socket.getOutputStream(), true);
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        } catch (IOException ex) {
-            System.err.println("Could not connect to server from Display screen !");
-            displayButton.setDisable(true); // Disable button if the server connection doesn't work
-        }
-    }
-
 
     private List<Lecture> parseLectureData(String response) {
 
@@ -93,9 +76,13 @@ public class DisplayController {
     public void handleDisplayButtonClick() {
         System.out.println("Button was clicked!");
         try {
+            // Getting the shared input/output streams
+            in = clientNetwork.getIn();
+            out = clientNetwork.getOut();
+
+
             // Asking server for display
             out.println("DISPLAY|ALL");
-
 
             // Wait for the server to send the data back
             String serverResponse = in.readLine();
@@ -104,8 +91,10 @@ public class DisplayController {
             if (serverResponse != null) {
                 if (serverResponse.startsWith("LECTURE_DATA|")) {
 
-                    // Only getting the necessary info from server response !
-                    String cleanData = serverResponse.substring(serverResponse.indexOf("LECTURE_DATA|"));
+                    // Safely extract the server's timetable data
+                    String cleanData = serverResponse.substring(serverResponse.indexOf("LECTURE_DATA|") + "LECTURE_DATA|".length());
+                    System.out.println("Clean Data to Parse: " + cleanData);
+
                     // Decode the data and update the grid
                     List<Lecture> parsedLectures = parseLectureData(cleanData);
                     populateGridWithLectures(parsedLectures);
@@ -117,6 +106,7 @@ public class DisplayController {
             }
         } catch (IOException e) {
             System.err.println("Failed to fetch data from the server.");
+            e.printStackTrace();
         }
     }
 
@@ -130,7 +120,7 @@ public class DisplayController {
         for (Lecture l : receivedLectures) {
 
             // DIAGNOSTIC PRINT: Let's see exactly what the JavaFX grid is trying to read
-            System.out.println("Attempting to draw block for Day: '" + l.getDayOfWeek().trim() + "' at Time: '" + l.getTimeSlot().trim() + "'");
+            System.out.println("Attempting to draw block for Day: '" + l.getDayOfWeek()+ "' at Time: '" + l.getTimeSlot() + "'");
 
             int col = 0;
             switch (l.getDayOfWeek().trim()) {

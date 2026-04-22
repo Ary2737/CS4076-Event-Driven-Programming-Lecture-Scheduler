@@ -34,11 +34,17 @@ public class ServerController {
         String[] details = request.split("\\|",-1);
         String action = details[0];
 
+        // Checking if the request has all 5 parts before trying to read them!
+        if ((action.equals("ADD") || action.equals("REMOVE")) && details.length < 5) {
+            return "SERVER: ERROR! Missing lecture details. Please fill all fields.";
+        }
+
 
         if(action.equals("ADD")) {
             // Form new Lecture object and populate with Strings from details array
             Lecture newLecture = new Lecture(details[1],details[2],details[3],details[4]);
             boolean success = timeTableSlots.addLecture(newLecture);
+
 
             if(success) return " SUCCESS! Lecture added";
             else return "FAILURE! Lecture could not be added. Clash found !";

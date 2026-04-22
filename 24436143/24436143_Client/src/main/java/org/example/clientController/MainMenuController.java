@@ -16,11 +16,17 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 
+
 public class MainMenuController {
 
-    private @FXML Button display_lectures_button;
+    @FXML private Button display_lectures_button;
     @FXML private Button add_button;
     @FXML private Button remove_button;
+
+    public void initialize() {
+        // Connect to the server as soon as the main menu opens
+        clientNetwork.connectToServer("127.0.0.1", 2378);
+    }
 
     @FXML
     private void handleModifyButtons(ActionEvent e) {

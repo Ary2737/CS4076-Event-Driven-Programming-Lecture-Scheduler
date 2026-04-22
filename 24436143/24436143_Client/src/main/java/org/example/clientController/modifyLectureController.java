@@ -42,16 +42,9 @@ public class modifyLectureController {
     @FXML private Button returnMainMenuButton;
 
 
-    // input/output streams
-    private Socket socket;
-    private PrintWriter out;
+    // Networking variables
     private BufferedReader in;
-
-    // Declaring variables to set up networking variables
-
-
-    private static final String SERVER_IP = "127.0.0.1"; // Default IP for localhost. Easier testing !
-    private static final int SERVER_PORT = 2378;
+    private PrintWriter out;
 
 
     // Initialises ChoiceBoxes automatically on run-time
@@ -69,21 +62,6 @@ public class modifyLectureController {
                 "16:00-17:00",
                 "17:00-18:00"
         );
-
-        try {
-            
-            socket = new Socket(SERVER_IP,SERVER_PORT);
-            out = new PrintWriter(socket.getOutputStream(),true);
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
-            // Default server opening message
-            // Places this message in textArea for client-server logs
-            serverClientLog.appendText("SERVER: Connected to Server at " + SERVER_IP + ":" + SERVER_PORT + "\n");
-            // If there is an error with streams/connection
-        } catch(IOException ex) {
-            serverClientLog.appendText("SYSTEM: Error: Could not connect to server. Is it running?\n");
-            addLectureButton.setDisable(true); // Disable the button if we have no connection
-        }
     }
 
     /*
@@ -92,44 +70,48 @@ public class modifyLectureController {
 
     @FXML
     private void handleLectureModification(ActionEvent event) {
-        // Get data from user input/input UI
-        String dayOfWeek = dayChoiceBox.getValue();
-        String timeSlot = timeSlotChoiceBox.getValue();
-        String roomCode = textFieldRoomCode.getText();
-        String moduleCode = textFieldModuleCode.getText();
-
-        // Ensure nothing is empty
-        if (dayOfWeek == null || timeSlot == null || roomCode.isEmpty() || moduleCode.isEmpty()) {
-            serverClientLog.appendText("SYSTEM: Please fill in all fields before adding.\n");
-            // Prevents server from receiving empty request
-            return;
-
-        }
-
-        // Determining whether "ADD" or 'REMOVE" button was clicked
-        // This will determine which action the user wants to do (ADD/REMOVE lecture)
-        String modifyAction = " ";
-
-        // getSource() = Tells us which button was clicked
-
-        if(event.getSource() == addLectureButton){
-            modifyAction = "ADD|";
-        } else if(event.getSource() == removeLectureButton){
-            modifyAction = "REMOVE|";
-        }
-
-        // Formatting client request string for server
-        String clientRequest = modifyAction +  dayOfWeek + " | " +  timeSlot + " | " +  moduleCode + " | " + roomCode;
-
-        // Attempt to send the client request to the server
         try {
+            // Get data from user input/input UI
+            String dayOfWeek = dayChoiceBox.getValue();
+            String timeSlot = timeSlotChoiceBox.getValue();
+            String roomCode = textFieldRoomCode.getText();
+            String moduleCode = textFieldModuleCode.getText();
+
+            // Ensure nothing is empty
+            if (dayOfWeek == null || timeSlot == null || roomCode.isEmpty() || moduleCode.isEmpty()) {
+                serverClientLog.appendText("SYSTEM: Please fill in all fields before adding.\n");
+                // Prevents server from receiving empty request
+                return;
+            }
+
+            // Determining whether "ADD" or "REMOVE" button was clicked
+            // This will determine which action the user wants to do (ADD/REMOVE lecture)
+            String modifyAction = " ";
+
+            // getSource() = Tells us which button was clicked
+
+            if(event.getSource() == addLectureButton){
+                modifyAction = "ADD|";
+            } else if(event.getSource() == removeLectureButton){
+                modifyAction = "REMOVE|";
+            }
+
+            // Formatting client request string for server
+            String clientRequest = modifyAction +  dayOfWeek + "|" +  timeSlot+ "|" +  moduleCode.trim() + "|"
+                    + roomCode.trim();
+
+
+            // Grabbing the shared input/output streams
+            in = clientNetwork.getIn();
+            out = clientNetwork.getOut();
+
             serverClientLog.appendText("CLIENT: Sending " + clientRequest + " to SERVER\n");
             out.println(clientRequest);
 
             String serverResponse = in.readLine();
             serverClientLog.appendText("SERVER: " + serverResponse);
 
-            // If there is an error with the streams/server connection/processing
+        // If there is an error with the streams/server connection/processing
         } catch (IOException ex) {
             serverClientLog.appendText("SYSTEM: Error: " + ex.getMessage());
         }
@@ -142,40 +124,19 @@ public class modifyLectureController {
 
     @FXML
     private void handleStopConnection(ActionEvent event) {
-
         // String to be sent to server (Client's request to shut down server)
         String clientRequest = "QUIT";
 
-        // Informing server with "QUIT" client request
-        try {
-            // Client "QUIT" request is sent to server
-            serverClientLog.appendText("CLIENT: Attempting to close server connection...\n");
-            serverClientLog.appendText("CLIENT: Sending " + clientRequest + " to SERVER\n");
-            out.println(clientRequest);
+        // Client "QUIT" request is sent to server
+        serverClientLog.appendText("CLIENT: Attempting to close server connection...\n");
+        serverClientLog.appendText("CLIENT: Sending " + clientRequest + " to SERVER\n");
+        out.println(clientRequest);
 
-            // Server confirms that the connection is closed
-            String serverResponse = in.readLine();
-            serverClientLog.appendText("SERVER: " + serverResponse);
+        clientNetwork.disconnect();
+        serverClientLog.appendText("SYSTEM: Disconnected from server.\n");
+        addLectureButton.setDisable(true);
+        removeLectureButton.setDisable(true);
 
-
-            // Closing the input/output streams
-            if(out != null) out.close();
-            if(in != null) in.close();
-
-            // Closing the client's socket
-            if(socket != null && !socket.isClosed()) socket.close();
-
-
-            serverClientLog.appendText("SERVER: Connection successfully closed\n");
-
-            // Disabling GUI buttons so that user can't submit add/remove requests
-            addLectureButton.setDisable(true);
-            removeLectureButton.setDisable(true);
-
-        } catch (IOException e) {
-            serverClientLog.appendText("SYSTEM: Error: " + e.getMessage());
-            throw new RuntimeException(e);
-        }
 
     }
 
