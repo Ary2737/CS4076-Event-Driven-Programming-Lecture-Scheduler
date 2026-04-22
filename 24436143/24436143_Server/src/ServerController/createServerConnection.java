@@ -33,93 +33,34 @@ public class createServerConnection {
         // Attempt to create server socket
         try {
             serverSocket = new ServerSocket(PORT);
-        } catch(IOException ex) {
+        } catch (IOException ex) {
             System.err.println("Could not create server socket!");
             System.exit(1);
         }
 
 
-        // Making the server run + check for any exceptions
-        // Allows server to handle multiple clients (One after the other)
-        do {
+        System.out.println("Server is running and waiting for clients...");
+
+        // Infinite loop to constantly accept new clients
+        while (true) {
             try {
-                run();
-            } catch(IOException ex) {
-                System.err.println("Could not run Server Connection!");
-                System.exit(1);
-            }
+                // 1. Wait for a client to connect (blocks until someone connects)
+                Socket link = serverSocket.accept();
+                System.out.println("New client connected!");
 
-        } while(true);
+                // 2. Create a new ClientHandler worker for this specific client
+                ClientHandler handler = new ClientHandler(link, controller);
 
+                // 3. Put the worker in a Thread and start it!
+                Thread clientThread = new Thread(handler);
+                clientThread.start();
 
-    }
-
-    private static void run() throws IOException {
-
-            Socket link = null;  // Socket which creates connection between server + client
-            BufferedReader in = null;
-            PrintWriter out = null;
-            try
-            {
-                // Create link between server and client
-                link = serverSocket.accept();
-
-                // Set up input/output streams to get Client's String
-                in = new BufferedReader(new InputStreamReader(link.getInputStream()));
-                out = new PrintWriter(link.getOutputStream(),true);
-
-                // Read in message from the client and check if null
-
-                String clientMessage = " ";
-
-                // If not null try to process the client's message using server's controller
-                // If null , do nothing
-                while ((clientMessage = in.readLine()) != null) {
-                    System.out.println("SERVER: Received: " + clientMessage);
-                    try {
-                        String serverResponse = controller.processClientRequest(clientMessage);
-
-                        // Output response to console using PrintWriter
-                        out.println(serverResponse);
-
-
-                        // If the client wants to quit, break the loop to close connection
-                        if (clientMessage.equals("QUIT")) {
-                            break;
-                        }
-
-                    } catch (IncorrectActionException ex) {
-                        // If the server can't process request throw our own custom exception
-                        // Server catches the error and sends error message back to client
-                        System.err.println("Incorrect message sent by client !" + ex.getMessage());
-                        out.println("ERROR|" + ex.getMessage());
-                    }
-                }
-            } catch(IOException ex) {
-                // Catches/handles errors caused by errors with input/output streams
-                ex.printStackTrace();
-            }
-
-            // Closes connection for period of inactivity etc
-
-            finally {
-                try {
-                    System.out.println("Client handler loop finished. Closing connection.");
-                    if(link != null) link.close();
-
-                    // These if statements prevent NullPointerExceptions on the client side
-                    // If input stream isn't null close it
-                    if(in != null) in.close();
-
-                    // If link socket isn't null close it
-                    if(link != null) link.close();
-
-                } catch(IOException e)
-                // Catches unknown errors when closing the link socket
-                {
-                    System.err.println("Unable to properly close client connection!");
-                }
+            } catch (IOException ex) {
+                System.err.println("Error accepting client connection!");
             }
         }
     }
+}
+
+
 
