@@ -1,11 +1,17 @@
 package org.example.clientController;
 
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 import org.example.clientModel.Lecture;
 
 import java.io.BufferedReader;
@@ -18,11 +24,13 @@ import java.util.List;
 
 public class DisplayController {
 
+
     // UI Components
     @FXML private GridPane scheduleGrid;
     @FXML private Button displayButton;
+    @FXML private Button returnMenuButton;
 
-    // Network/Stream variable
+    // Network/Stream variables
     private Socket socket;
     private BufferedReader in;
     private PrintWriter out;
@@ -159,6 +167,28 @@ public class DisplayController {
         block.getChildren().add(infoLabel);
 
         return block;
+    }
+
+    @FXML
+    private void handleMenuReturn(ActionEvent e) {
+        try {
+            // Loading the main menu scene
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/MainMenu.fxml"));
+            Parent root = loader.load();
+
+            // Getting the current window (Stage) from the button that was clicked
+            Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+
+            // Create a new scene with the Main Menu and set it on the stage
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+
+        } catch (IOException ex) {
+            System.err.println("Error loading Main Menu screen:");
+            ex.printStackTrace();
+        }
+
     }
 }
 

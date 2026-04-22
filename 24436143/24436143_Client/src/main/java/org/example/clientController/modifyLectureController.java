@@ -7,10 +7,15 @@ package org.example.clientController;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,8 +24,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class modifyLectureController {
-
-    // Declaring UI components of ADD screen
+    // Declaring UI components of ADD/REMOVE screen
 
     // ChoiceBoxes
     @FXML private ChoiceBox<String> timeSlotChoiceBox;
@@ -35,6 +39,7 @@ public class modifyLectureController {
     @FXML private Button addLectureButton;
     @FXML private Button stopConnectionButton;
     @FXML public Button removeLectureButton;
+    @FXML private Button returnMainMenuButton;
 
 
     // input/output streams
@@ -170,6 +175,28 @@ public class modifyLectureController {
         } catch (IOException e) {
             serverClientLog.appendText("SYSTEM: Error: " + e.getMessage());
             throw new RuntimeException(e);
+        }
+
+    }
+
+    @FXML
+    private void handleReturnMenu(ActionEvent e) {
+        try {
+            // Loading the main menu scene
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/MainMenu.fxml"));
+            Parent root = loader.load();
+
+            // Getting the current window (Stage) from the button that was clicked
+            Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+
+            // Create a new scene with the Main Menu and set it on the stage
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+
+        } catch (IOException ex) {
+            System.err.println("Error loading Main Menu screen:");
+            ex.printStackTrace();
         }
 
     }
