@@ -16,13 +16,11 @@ import org.example.clientModel.Lecture;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DisplayController {
+public class DisplayController extends ClientAlerts {
 
 
     // UI Components
@@ -33,6 +31,12 @@ public class DisplayController {
     // Stream variables
     private BufferedReader in;
     private PrintWriter out;
+
+    public void initialize(){
+        // Setting up shared input/output streams
+        in = clientNetwork.getIn();
+        out = clientNetwork.getOut();
+    }
 
     private List<Lecture> parseLectureData(String response) {
 
@@ -100,6 +104,8 @@ public class DisplayController {
                     populateGridWithLectures(parsedLectures);
 
                 } else if (serverResponse.startsWith("SCHEDULE_EMPTY|")) {
+                    // Create alert to inform user that there is no lectures to show
+                    showInformationAlert("No Lectures to display","There are no lectures to display !");
                     // If empty, clear out the grid!
                     scheduleGrid.getChildren().removeIf(node -> node instanceof StackPane);
                 }
@@ -107,6 +113,9 @@ public class DisplayController {
         } catch (IOException e) {
             System.err.println("Failed to fetch data from the server.");
             e.printStackTrace();
+
+            // Show alert to user
+            showErrorAlert("Data Error", "Failed to fetch timetable data from the server.");
         }
     }
 
@@ -188,11 +197,15 @@ public class DisplayController {
             stage.show();
 
         } catch (IOException ex) {
+            showErrorAlert("Error loading Main Menu", "Failed to load Main Menu screen.");
             System.err.println("Error loading Main Menu screen:");
             ex.printStackTrace();
         }
 
     }
+
+
+
 }
 
 

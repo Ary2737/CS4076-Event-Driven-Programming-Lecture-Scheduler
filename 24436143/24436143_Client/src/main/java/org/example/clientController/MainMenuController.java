@@ -17,7 +17,7 @@ import java.io.IOException;
 
 
 
-public class MainMenuController {
+public class MainMenuController extends ClientAlerts {
 
     @FXML private Button display_lectures_button;
     @FXML private Button add_button;
@@ -78,9 +78,8 @@ public class MainMenuController {
 
         } catch (IOException ex) {
             // If you can't load scene
-            System.err.println("Unable to load display scene !");
-            ex.printStackTrace(); // Useful for debugging
-            throw new RuntimeException("Unable to load display scene !");
+            System.err.println("Unable to load next scene !");
+            showErrorAlert("Navigation Error", "Could not load the requested screen.");
         }
 
 

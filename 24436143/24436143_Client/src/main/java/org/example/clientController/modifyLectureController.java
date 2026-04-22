@@ -19,11 +19,9 @@ import javafx.stage.Stage;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.Socket;
 
-public class modifyLectureController {
+public class modifyLectureController extends ClientAlerts {
     // Declaring UI components of ADD/REMOVE screen
 
     // ChoiceBoxes
@@ -62,6 +60,11 @@ public class modifyLectureController {
                 "16:00-17:00",
                 "17:00-18:00"
         );
+
+        // Setting up shared input/output streams
+
+        this.out = clientNetwork.getOut();
+        this.in = clientNetwork.getIn();
     }
 
     /*
@@ -79,7 +82,8 @@ public class modifyLectureController {
 
             // Ensure nothing is empty
             if (dayOfWeek == null || timeSlot == null || roomCode.isEmpty() || moduleCode.isEmpty()) {
-                serverClientLog.appendText("SYSTEM: Please fill in all fields before adding.\n");
+                showErrorAlert("Missing Information" ,  "Please fill in all fields before pressing ADD/REMOVE");
+                serverClientLog.appendText("SYSTEM: Please fill in all fields before adding/removing.\n");
                 // Prevents server from receiving empty request
                 return;
             }
@@ -100,20 +104,26 @@ public class modifyLectureController {
             String clientRequest = modifyAction +  dayOfWeek + "|" +  timeSlot+ "|" +  moduleCode.trim() + "|"
                     + roomCode.trim();
 
-
-            // Grabbing the shared input/output streams
-            in = clientNetwork.getIn();
-            out = clientNetwork.getOut();
-
             serverClientLog.appendText("CLIENT: Sending " + clientRequest + " to SERVER\n");
             out.println(clientRequest);
 
             String serverResponse = in.readLine();
+
+            // Creating alerts based on the server response
+            if(serverResponse != null){
+                if(serverResponse.startsWith("ERROR")) {
+                    showErrorAlert("Action failed", serverResponse);
+                } else if(serverResponse.startsWith("Success")) {
+                    showInformationAlert("Success", serverResponse);
+                }
+
+            }
             serverClientLog.appendText("SERVER: " + serverResponse);
 
         // If there is an error with the streams/server connection/processing
         } catch (IOException ex) {
-            serverClientLog.appendText("SYSTEM: Error: " + ex.getMessage());
+            showErrorAlert("Connection Error", "Failed to communicate with the server.\n");
+            serverClientLog.appendText("SYSTEM: Error: " + ex.getMessage() + "\n");
         }
     }
 
@@ -133,6 +143,9 @@ public class modifyLectureController {
         out.println(clientRequest);
 
         clientNetwork.disconnect();
+        // Alert to let client know that connection is closed
+        showInformationAlert("Connection closed", "The server connection is now closed !");
+
         serverClientLog.appendText("SYSTEM: Disconnected from server.\n");
         addLectureButton.setDisable(true);
         removeLectureButton.setDisable(true);
@@ -156,6 +169,7 @@ public class modifyLectureController {
             stage.show();
 
         } catch (IOException ex) {
+            showErrorAlert("Connection Error", "Failed to communicate with the server.\n");
             System.err.println("Error loading Main Menu screen:");
             ex.printStackTrace();
         }
