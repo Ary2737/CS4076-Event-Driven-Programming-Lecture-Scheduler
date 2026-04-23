@@ -28,6 +28,7 @@ public class DisplayController extends ClientAlerts {
     @FXML private GridPane timetableGrid;
     @FXML private Button displayButton;
     @FXML private Button returnMenuButton;
+    @FXML private Button earlyLecturesButton;
 
     // Stream variables
     private BufferedReader in;
@@ -114,6 +115,46 @@ public class DisplayController extends ClientAlerts {
 
         // Start the worker thread!
         new Thread(fetchTimetableData).start();
+    }
+
+    // Sends EARLY_LECTURES to the server, then re-runs the timetable data fetch so
+    // the grid reflects the shifted schedule.
+    @FXML
+    public void handleEarlyLecturesClick() {
+
+        // Request is run on Task so
+        // the JavaFX Application Thread isn't blocked while the server's
+        // Fork-Join runs across its weekday subtasks.
+
+        Task<String> earlyLecturesTask = new Task<>() {
+            @Override
+            protected String call() throws Exception {
+                System.out.println("CLIENT: Requesting EARLY_LECTURES...");
+                out.println("EARLY_LECTURES");
+                return in.readLine();
+            }
+        };
+
+        earlyLecturesTask.setOnSucceeded(e -> {
+            String response = earlyLecturesTask.getValue();
+            System.out.println("SERVER: " + response);
+
+            if (response != null && response.startsWith("SUCCESS")) {
+                // Refresh the grid to show the new early lectures
+                handleDisplayButtonClick();
+            } else {
+                showErrorAlert("Early Lectures Failed",
+                        response == null ? "No response from server." : response);
+            }
+        });
+
+        earlyLecturesTask.setOnFailed(e -> {
+            Throwable error = earlyLecturesTask.getException();
+            showErrorAlert("Connection Error",
+                    "Failed to request early lectures: " + error.getMessage());
+        });
+
+        new Thread(earlyLecturesTask).start();
     }
 
     private void populateGridWithLectures(List<Lecture> receivedLectures) {

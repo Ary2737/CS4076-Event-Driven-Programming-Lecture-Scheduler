@@ -1,5 +1,6 @@
 package ServerController;
 import java.util.Iterator;
+import java.util.concurrent.ForkJoinPool;
 
 import ServerModel.Lecture;
 import ServerModel.Schedule;
@@ -23,7 +24,7 @@ public class ServerController {
     /**
      * This method processes the client's string and returns a suitable string back.
      * Message Format: ACTION|(DAY)|(TIMESLOT)|(MODULE CODE)|(ROOM CODE)
-     * E.g. ADD|Monday|09:00|CS101|C105
+     * E.g. ADD|Monday|09:00-10:00|CS101|C105
      */
 
     public String processClientRequest(String request) throws IncorrectActionException {
@@ -85,6 +86,13 @@ public class ServerController {
                 sb.setLength(sb.length() - 1);
 
                 return sb.toString();
+
+            case "EARLY_LECTURES":
+                // Divide-and-conquer: one ForkJoin subtask per weekday shifts
+                // that day's lectures toward the earliest available slots.
+                // invoke() blocks until all five day-tasks have joined.
+                ForkJoinPool.commonPool().invoke(new EarlyLecturesAction(timeTableSlots));
+                return "SUCCESS|Lectures shifted to earliest available slots";
 
             case "QUIT":
                 System.out.println("Client requested to end server connection....");

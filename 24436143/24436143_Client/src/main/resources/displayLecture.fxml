@@ -28,7 +28,8 @@
             </HBox.margin>
             </Label>
 
-            <HBox alignment="CENTER_RIGHT" fillHeight="false" prefHeight="29.0" prefWidth="110.0" spacing="20.0" HBox.hgrow="ALWAYS">
+            <HBox alignment="CENTER_RIGHT" fillHeight="false" prefHeight="29.0" prefWidth="230.0" spacing="10.0" HBox.hgrow="ALWAYS">
+                <Button fx:id="earlyLecturesButton" mnemonicParsing="false" onAction="#handleEarlyLecturesClick" style="-fx-background-color: #389421; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5;" text="Early Lectures" />
                 <Button fx:id="displayButton" mnemonicParsing="false" onAction="#handleDisplayButtonClick" style="-fx-background-color: #389421; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5;" text="Display Schedule" />
             </HBox>
         </HBox>

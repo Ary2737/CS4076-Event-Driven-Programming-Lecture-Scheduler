@@ -1,4 +1,5 @@
 org/example/clientController/clientNetwork.class
+org/example/clientController/DisplayController$2.class
 org/example/clientController/modifyLectureController.class
 org/example/clientController/DisplayController$1.class
 module-info.class
