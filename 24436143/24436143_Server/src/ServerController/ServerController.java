@@ -1,6 +1,9 @@
 package ServerController;
 import java.util.Iterator;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
+
+import javafx.concurrent.Task;
 
 import ServerModel.Lecture;
 import ServerModel.Schedule;
@@ -88,10 +91,29 @@ public class ServerController {
                 return sb.toString();
 
             case "EARLY_LECTURES":
-                // Divide-and-conquer: one ForkJoin subtask per weekday shifts
-                // that day's lectures toward the earliest available slots.
-                // invoke() blocks until all five day-tasks have joined.
-                ForkJoinPool.commonPool().invoke(new EarlyLecturesAction(timeTableSlots));
+                // Run Fork-Join work on a separate Task thread so only this
+                // ClientHandler waits — other clients stay unblocked.
+                Task<Void> earlyLecturesTask = new Task<>() {
+                    @Override
+                    protected Void call() {
+                        ForkJoinPool.commonPool()
+                                .invoke(new EarlyLecturesAction(timeTableSlots));
+                        return null;
+                    }
+                };
+
+                Thread workerThread = new Thread(earlyLecturesTask, "EarlyLectures-Worker");
+                workerThread.setDaemon(true);
+                workerThread.start();
+
+                try {
+                    earlyLecturesTask.get();
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                    return "ERROR|Early lectures task was interrupted";
+                } catch (ExecutionException ee) {
+                    return "ERROR|Early lectures task failed: " + ee.getCause().getMessage();
+                }
                 return "SUCCESS|Lectures shifted to earliest available slots";
 
             case "QUIT":

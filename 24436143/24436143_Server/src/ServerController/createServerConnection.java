@@ -29,6 +29,12 @@ public class createServerConnection {
     public static void main(String[] args) {
         System.out.println("Creating Server Connection....");
 
+        try {
+            javafx.application.Platform.startup(() -> {});
+        } catch (IllegalStateException alreadyStarted) {
+            // Safe to ignore: toolkit has already been initialized.
+        }
+        javafx.application.Platform.setImplicitExit(false);
 
         // Attempt to create server socket
         try {
@@ -44,14 +50,14 @@ public class createServerConnection {
         // Infinite loop to constantly accept new clients
         while (true) {
             try {
-                // 1. Wait for a client to connect (blocks until someone connects)
+                // Wait for a client to connect (blocks until someone connects)
                 Socket link = serverSocket.accept();
                 System.out.println("New client connected!");
 
-                // 2. Create a new ClientHandler worker for this specific client
+                // Create a new ClientHandler worker for this specific client
                 ClientHandler handler = new ClientHandler(link, controller);
 
-                // 3. Put the worker in a Thread and start it!
+                // Put the worker in a Thread and start it
                 Thread clientThread = new Thread(handler);
                 clientThread.start();
 

@@ -1,0 +1,6 @@
+{
+  "java.project.referencedLibraries": [
+    "${userHome}/.m2/repository/org/openjfx/javafx-base/21.0.6/javafx-base-21.0.6-mac-aarch64.jar",
+    "${userHome}/.m2/repository/org/openjfx/javafx-graphics/21.0.6/javafx-graphics-21.0.6-mac-aarch64.jar"
+  ]
+}
