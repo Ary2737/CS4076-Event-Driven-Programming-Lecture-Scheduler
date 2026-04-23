@@ -1,0 +1,10 @@
+org/example/clientController/clientNetwork.class
+org/example/clientController/modifyLectureController.class
+org/example/clientController/DisplayController$1.class
+module-info.class
+org/example/ClientView.class
+org/example/clientController/ClientAlerts.class
+org/example/clientController/DisplayController.class
+org/example/Launcher.class
+org/example/clientController/MainMenuController.class
+org/example/clientModel/Lecture.class
