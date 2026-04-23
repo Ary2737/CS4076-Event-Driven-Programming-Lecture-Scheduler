@@ -36,5 +36,6 @@ public class Lecture {
         return dayOfWeek + "-" + timeSlot;
     }
 
+
 }
 

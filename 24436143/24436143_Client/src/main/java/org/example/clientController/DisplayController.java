@@ -3,6 +3,8 @@ package org.example.clientController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -46,8 +48,9 @@ public class DisplayController extends ClientAlerts {
 
         System.out.println("Cleaned data being parsed: '" + cleanData + "'");
 
-        // Split the string into individual rows using the colon ':'
-        String[] rows = cleanData.split(":");
+        // Split the string into individual rows using the semicolon ';'
+        // (can't use ':' since the timeSlot itself contains colons e.g. "09:00-10:00")
+        String[] rows = cleanData.split(";");
 
         // Loop through each row
         for (String row : rows) {
@@ -158,14 +161,21 @@ public class DisplayController extends ClientAlerts {
     private StackPane createLectureBlock(Lecture lecture) {
         StackPane block = new StackPane();
 
-        // Add a nice green background with rounded corners and margins
-        block.setStyle("-fx-background-color: #4fff4f; -fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #246324;");
+        // Darker green to match the header buttons, with rounded corners
+        block.setStyle("-fx-background-color: #389421; -fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #246324;");
 
-        // Add the module and room text inside the block
+        // "LEC" tag pinned to the top of the block
+        Label lecLabel = new Label("LEC");
+        lecLabel.setStyle("-fx-text-fill: #ffffff; -fx-font-weight: bold; -fx-font-size: 10;");
+        StackPane.setAlignment(lecLabel, Pos.TOP_CENTER);
+        StackPane.setMargin(lecLabel, new Insets(4, 0, 0, 0));
+
+        // Module + room centered in the block
         Label infoLabel = new Label(lecture.getModuleCode() + "\n" + lecture.getRoomCode());
         infoLabel.setStyle("-fx-text-fill: #ffffff; -fx-font-weight: bold; -fx-alignment: center;");
+        StackPane.setAlignment(infoLabel, Pos.CENTER);
 
-        block.getChildren().add(infoLabel);
+        block.getChildren().addAll(lecLabel, infoLabel);
 
         return block;
     }

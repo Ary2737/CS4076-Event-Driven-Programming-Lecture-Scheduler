@@ -1,10 +1,8 @@
 package ServerController;
-import ServerModel.Schedule;
+import java.util.Iterator;
+
 import ServerModel.Lecture;
-
-
-import java.util.HashMap;
-import java.lang.StringBuilder;
+import ServerModel.Schedule;
 
 
 /**
@@ -39,70 +37,62 @@ public class ServerController {
             return "SERVER: ERROR! Missing lecture details. Please fill all fields.";
         }
 
+        switch(action) {
+            case "ADD":
 
-        if(action.equals("ADD")) {
-            // Form new Lecture object and populate with Strings from details array
-            Lecture newLecture = new Lecture(details[1],details[2],details[3],details[4]);
-            boolean success = timeTableSlots.addLecture(newLecture);
-
-
-            if(success) return " SUCCESS! Lecture added";
-            else return "FAILURE! Lecture could not be added. Clash found !";
-
-        } else if(action.equals("REMOVE")) {
-
-            // Create model of the Lecture to remove
-            Lecture lectureToRemove = new Lecture(details[1],details[2],details[3],details[4]);
-            boolean success = timeTableSlots.removeLecture(lectureToRemove);
-
-            if(success) return " Lecture removed. " +
-                               "Room: " + lectureToRemove.getRoomCode() +
-                              " free, TimeSlot: " + lectureToRemove.getTimeSlot() + " free";
-            else return " FAILURE! Lecture doesn't already exist";
-
-        } else if(action.equals("DISPLAY")) {
-
-            // Get Lectures currently in HashMap
-            var scheduledLectures = timeTableSlots.getLectureSlots().values();
-
-            // Check if there are lecture slots in the schedule
-            if(scheduledLectures.isEmpty()) {
-                return " SCHEDULE_EMPTY | No lectures scheduled yet.";
-
-            }
-
-            // Creating StringBuilder to format the display output string
-            // ':' = Divides lecture objects
-            // ',' = Divides columns representing attributes of lecture
-
-            StringBuilder scheduleData= new StringBuilder("LECTURE_DATA| ");
+                if (details.length < 5) {
+                    return "ERROR|Missing lecture details";
+                }
+                // Form new Lecture object and populate with Strings from details array
+                Lecture newLecture = new Lecture(details[1],details[2],details[3],details[4]);
+                boolean addSuccess = timeTableSlots.addLecture(newLecture);
 
 
-            // Add lectures to formatted StringBuilder
-            for(Lecture l: scheduledLectures) {
-                // Append lecture details
-                scheduleData.append(l.getDayOfWeek()).append(",");
-                scheduleData.append(l.getTimeSlot()).append(",");
-                scheduleData.append(l.getModuleCode()).append(",");
-                scheduleData.append(l.getRoomCode()).append(",");
+                if(addSuccess) return "SUCCESS|Lecture added";
+                else return "ERROR|Clash with existing lecture found !";
 
-                // Append divider of lecture slots
-                scheduleData.append(":");
-            }
+            case "REMOVE":
+                if (details.length < 5) {
+                    return "ERROR|Missing lecture details";
+                }
 
-            return "Success! Displaying schedule: " + scheduleData;
+                Lecture lectureToRemove = new Lecture(details[1], details[2], details[3], details[4]);
+                boolean removeSuccess = timeTableSlots.removeLecture(lectureToRemove);
 
-        } else if(action.equals("QUIT")) {
-            System.out.println("Client requested to end server connection....");
+                if (removeSuccess) return "SUCCESS|Lecture removed";
+                else return "ERROR|Lecture not found";
 
-            // Message to confirm the closure of the server connection
-            return "Connection with client has ended. Goodbye";
+            case "DISPLAY":
+
+                var scheduledLectures = timeTableSlots.getLectureSlots().values();
+
+                if (scheduledLectures.isEmpty()) {
+                    return "SCHEDULE_EMPTY";
+                }
+
+                StringBuilder sb = new StringBuilder("LECTURE_DATA|");
+
+                Iterator<Lecture> iterator = scheduledLectures.iterator();
+                while (iterator.hasNext()) {
+                    Lecture l = iterator.next();
+                    sb.append(l.getDayOfWeek()).append(",")
+                            .append(l.getTimeSlot()).append(",")
+                            .append(l.getModuleCode()).append(",")
+                            .append(l.getRoomCode()).append(";");
+                }
+
+                // remove trailing record separator
+                sb.setLength(sb.length() - 1);
+
+                return sb.toString();
+
+            case "QUIT":
+                System.out.println("Client requested to end server connection....");
+                return "SUCCESS|Connection closed";
+
+            default:
+                throw new IncorrectActionException("Unknown action: " + action);
         }
-        else {
-            // If all else fails throw our own custom exception (if action is undefined)
-            throw new IncorrectActionException("The server cannot process this action" + action);
-        }
-
     }
 
 }
