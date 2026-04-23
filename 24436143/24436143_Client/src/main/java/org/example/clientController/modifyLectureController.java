@@ -54,6 +54,7 @@ public class modifyLectureController extends ClientAlerts {
                 "09:00-10:00",
                 "10:00-11:00",
                 "11:00-12:00",
+                "12:00-13:00",
                 "13:00-14:00",
                 "14:00-15:00",
                 "15:00-16:00",
@@ -65,6 +66,12 @@ public class modifyLectureController extends ClientAlerts {
 
         this.out = clientNetwork.getOut();
         this.in = clientNetwork.getIn();
+
+        if (this.out != null && this.in != null) {
+            serverClientLog.appendText("SYSTEM: Connected to server.\n");
+        } else {
+            serverClientLog.appendText("SYSTEM: Not connected to server.\n");
+        }
     }
 
     /*
@@ -118,7 +125,7 @@ public class modifyLectureController extends ClientAlerts {
                 }
 
             }
-            serverClientLog.appendText("SERVER: " + serverResponse);
+            serverClientLog.appendText("SERVER: " + serverResponse + "\n");
 
         // If there is an error with the streams/server connection/processing
         } catch (IOException ex) {

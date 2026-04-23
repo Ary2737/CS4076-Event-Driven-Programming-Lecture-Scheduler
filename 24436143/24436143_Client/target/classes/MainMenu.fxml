@@ -7,43 +7,41 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="border_pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.clientController.MainMenuController">
+<BorderPane fx:id="border_pane" prefHeight="480.0" prefWidth="640.0" style="-fx-background-color: #f5f5f5;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.clientController.MainMenuController">
+
+    <!-- TITLE -->
     <top>
-        <Label fx:id="title_label" style="-fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 28;" text="UL Lecture Timetable" textFill="#30bc20" BorderPane.alignment="TOP_CENTER">
+        <Label fx:id="title_label" alignment="CENTER" style="-fx-font-family: Arial; -fx-font-weight: bold; -fx-font-size: 30;" text="UL Lecture Timetable" textFill="#30bc20" BorderPane.alignment="CENTER">
             <BorderPane.margin>
-                <Insets top="50.0" />
+                <Insets bottom="20.0" top="40.0" />
             </BorderPane.margin>
         </Label>
     </top>
+
+    <!-- LOGO -->
     <center>
-        <ImageView fitHeight="184.0" fitWidth="423.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
-            <image>
-                <Image url="@images/img.png" />
-            </image>
-            <BorderPane.margin>
-                <Insets bottom="-40.0" top="-30.0" />
-            </BorderPane.margin>
-        </ImageView>
-    </center>
-    <bottom>
-        <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <VBox alignment="CENTER">
             <children>
-                <Button fx:id="add_button" mnemonicParsing="false" onAction="#handleModifyButtons" style="-fx-background-color: #3add94;" text="ADD Lecture" textFill="#101111">
-                    <HBox.margin>
-                        <Insets left="100.0" top="30.0" />
-                    </HBox.margin>
-                </Button>
-                <Button fx:id="remove_button" mnemonicParsing="false" onAction="#handleModifyButtons" style="-fx-background-color: #3add94;" text="REMOVE Lecture">
-                    <HBox.margin>
-                        <Insets left="50.0" top="30.0" />
-                    </HBox.margin>
-                </Button>
-                <Button fx:id="display_lectures_button" mnemonicParsing="false" onAction="#handleDisplayButtonClick" style="-fx-background-color: #3add94;" text="DISPLAY Lectures">
-                    <HBox.margin>
-                        <Insets left="50.0" top="30.0" />
-                    </HBox.margin>
-                </Button>
+                <ImageView fitHeight="200.0" fitWidth="400.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@images/img.png" />
+                    </image>
+                </ImageView>
+            </children>
+        </VBox>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER" spacing="40.0" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets bottom="50.0" left="30.0" right="30.0" top="30.0" />
+            </padding>
+            <children>
+                <Button fx:id="add_button" mnemonicParsing="false" onAction="#handleModifyButtons" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #389421; -fx-background-radius: 5; -fx-font-weight: BOLD;" text="ADD Lecture" textFill="WHITE" />
+                <Button fx:id="remove_button" mnemonicParsing="false" onAction="#handleModifyButtons" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #389421; -fx-background-radius: 5; -fx-font-weight: BOLD;" text="REMOVE Lecture" textFill="WHITE" />
+                <Button fx:id="display_lectures_button" mnemonicParsing="false" onAction="#handleDisplayButtonClick" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #389421; -fx-background-radius: 5; -fx-font-weight: BOLD;" text="DISPLAY Lectures" textFill="WHITE" />
             </children>
         </HBox>
     </bottom>
